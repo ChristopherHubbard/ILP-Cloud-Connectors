@@ -69,6 +69,3 @@ dist
 
 # Ignore Serverless build outputs
 .serverless
-
-# Exclude package-lock.json
-package-lock.json
