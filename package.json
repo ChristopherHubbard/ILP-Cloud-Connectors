@@ -1,0 +1,38 @@
+{
+  "name": "ilp-cloud-connectors",
+  "version": "1.0.0",
+  "description": "Interledger connectors hosted in the cloud",
+  "main": "index.js",
+  "scripts": {
+    "debug-lambda": "export SLS_DEBUG=* && node --inspect /usr/local/bin/serverless offline -s dev",
+    "build-dev": "npm run copy && tsc -p ./ && webpack --config ./distlib/webpack.config.js --mode development",
+    "build-prod": "npm run copy && tsc -p ./ && webpack --config ./distlib/webpack.config.js --mode production",
+    "test": "jest --coverage --collectCoverageFrom=src/**/*.{ts,tsx}\"",
+    "copy": "copyfiles src/**/assets/* distlib/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChristopherHubbard/ILP-Cloud-Connectors.git"
+  },
+  "author": "ChristopherHubbard",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChristopherHubbard/ILP-Cloud-Connectors/issues"
+  },
+  "homepage": "https://github.com/ChristopherHubbard/ILP-Cloud-Connectors#readme",
+  "dependencies": {
+    "aws-lambda": "^0.1.2",
+    "serverless-offline": "^4.9.4",
+    "serverless-plugin-typescript": "^1.1.7"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.24",
+    "copyfiles": "^2.1.0",
+    "jest": "^24.7.1",
+    "jest-cli": "^24.7.1",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.3",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.0"
+  }
+}
