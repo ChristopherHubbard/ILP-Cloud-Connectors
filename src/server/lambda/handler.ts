@@ -58,26 +58,54 @@ export const getConnector: Handler = async (event: APIGatewayProxyEvent, context
     };
 }
 
-export const deleteConnector: Handler = (event: APIGatewayProxyEvent, context: Context) =>
+export const deleteConnector: Handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult>  =>
 {
     console.log(event);
     console.log(context);
+
+    return {
+        statusCode: 200,
+        body: JSON.stringify({
+            message: 'Hello World'
+        })
+    };
 }
 
-export const closeChannel: Handler = (event: APIGatewayProxyEvent, context: Context) =>
+export const closeChannel: Handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult>  =>
 {
     console.log(event);
     console.log(context);
+
+    return {
+        statusCode: 200,
+        body: JSON.stringify({
+            message: 'Hello World'
+        })
+    };
 }
 
-export const getConnectorInfo: Handler = (event: APIGatewayProxyEvent, context: Context) =>
+export const getConnectorInfo: Handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult>  =>
 {
     console.log(event);
     console.log(context);
+
+    return {
+        statusCode: 200,
+        body: JSON.stringify({
+            message: 'Hello World'
+        })
+    };
 }
 
-export const stopConnector: Handler = (event: APIGatewayProxyEvent, context: Context) =>
+export const stopConnector: Handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult>  =>
 {
     console.log(event);
     console.log(context);
+
+    return {
+        statusCode: 200,
+        body: JSON.stringify({
+            message: 'Hello World'
+        })
+    };
 }
