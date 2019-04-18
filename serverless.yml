@@ -94,3 +94,7 @@ functions:
           path: /connector
           method: post
           cors: true
+
+custom:
+  serverless-offline:
+    port: 4000
