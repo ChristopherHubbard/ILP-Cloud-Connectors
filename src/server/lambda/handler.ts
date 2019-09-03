@@ -1,51 +1,37 @@
 import { Handler, APIGatewayProxyEvent, Context, APIGatewayProxyResult } from 'aws-lambda';
-import { ECS, AWSError } from 'aws-sdk';
 
-// Use an environment variable for the current docker container tag for the task definition
-const CURRENT_DOCKER_TAG: string = '1';
-
-// Create an ECS context to create tasks
-const ecs: ECS = new ECS();
+import { runConnectorTask, getTaskInfoByARN } from './services';
 
 export const createConnector: Handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> =>
 {
     console.log(event);
     console.log(context);
 
-    // Create a ECS Fargate task -- the configuration here will likely need to be changed
-    const runTaskParams: ECS.RunTaskRequest = {
-        taskDefinition: `ilp-cloud-connector:${CURRENT_DOCKER_TAG}`,
-        launchType: 'FARGATE',
-        cluster: 'ILP-Cloud-Connectors',
-    };
-
-    // Lambda needs to have ECS IAM policies
-    const task = ecs.runTask(runTaskParams, (error: AWSError, data: ECS.RunTaskResponse) =>
+    const { uplinkName, testnet, secret } = JSON.parse(event.body as string);
+    
+    try
     {
-        // Check for errors during the creation of this ECS Fargate task
-        if (error)
-        {
-            console.error(error, error.stack);
-        }
-        else
-        {
-            // Place the information on this connector's task into the Table
-            console.log('Data from ECS task creation...');
-            console.log(data);
-        }
-    });
+        const task = await runConnectorTask(uplinkName, testnet, secret);
 
-    console.log(task);
+        return {
+            statusCode: 200,
+            body: JSON.stringify({
+                task: task
+            })
+        };
+    }
+    catch (error)
+    {
+        console.error(error.toString());
 
-    return {
-        statusCode: 200,
-        body: JSON.stringify({
-            message: 'Hello World'
-        })
-    };
+        return {
+            statusCode: 500,
+            body: JSON.stringify({})
+        }
+    }
 }
 
-export const getConnector: Handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> =>
+export const startConnector: Handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> =>
 {
     console.log(event);
     console.log(context);
@@ -71,28 +57,17 @@ export const deleteConnector: Handler = async (event: APIGatewayProxyEvent, cont
     };
 }
 
-export const closeChannel: Handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult>  =>
-{
-    console.log(event);
-    console.log(context);
-
-    return {
-        statusCode: 200,
-        body: JSON.stringify({
-            message: 'Hello World'
-        })
-    };
-}
-
 export const getConnectorInfo: Handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult>  =>
 {
     console.log(event);
     console.log(context);
 
+    const { IPAddress } = await getTaskInfoByARN('b0f148f1-0b75-4762-9975-78c049460dfd');
+
     return {
         statusCode: 200,
         body: JSON.stringify({
-            message: 'Hello World'
+            IPAddress
         })
     };
 }

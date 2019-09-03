@@ -33,7 +33,7 @@
                 "run",
                 "debug-lambda"
             ],
-            "port": 9229
+            "port": 5858
         }
     ]
 }

@@ -4,7 +4,7 @@
   "description": "Interledger connectors hosted in the cloud",
   "main": "index.js",
   "scripts": {
-    "debug-lambda": "export SLS_DEBUG=* && node --inspect /usr/local/bin/serverless offline -s dev",
+    "debug-lambda": "export SLS_DEBUG=* && node --inspect=5858 /usr/local/bin/serverless offline -s dev",
     "build-dev": "npm run copy && tsc -p ./ && webpack --config ./distlib/webpack.config.js --mode development",
     "build-prod": "npm run copy && tsc -p ./ && webpack --config ./distlib/webpack.config.js --mode production",
     "test": "jest --coverage --collectCoverageFrom=src/**/*.{ts,tsx}\"",
