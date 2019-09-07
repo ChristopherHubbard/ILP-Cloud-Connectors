@@ -36,7 +36,7 @@ export const runConnectorTask = async (uplinkName: string, testnet: string, secr
                     'subnet-50e82a1c'
                 ],
                 securityGroups: [
-                    'ilp-connector-task-sg'
+                    'sg-035cb457f0aa894e3'
                 ],
                 assignPublicIp: 'ENABLED'
             }
