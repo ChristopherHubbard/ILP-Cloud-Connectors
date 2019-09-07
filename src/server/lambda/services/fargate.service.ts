@@ -45,10 +45,9 @@ export const runConnectorTask = async (uplinkName: string, testnet: string, secr
 
     // Lambda needs to have ECS IAM policies -- make sure the task definition with this tag exists before trying to create
     const task = await ecs.runTask(runTaskParams).promise();
-    console.log(task);
+    console.log('Task created for user');
 
     // Return the reference information to interact with this connector
-
     return task;
 }
 
