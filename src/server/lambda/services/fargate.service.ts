@@ -1,5 +1,4 @@
 import { ECS, AWSError } from 'aws-sdk';
-import { DescribeTaskDefinitionRequest, DescribeTasksRequest, DescribeTasksResponse } from '../../../../node_modules/aws-sdk/clients/ecs';
 
 // Create an ECS context to create tasks
 const ecs: ECS = new ECS();
@@ -36,6 +35,9 @@ export const runConnectorTask = async (uplinkName: string, testnet: string, secr
                     'subnet-d4d5f8bc',
                     'subnet-50e82a1c'
                 ],
+                securityGroups: [
+                    'ilp-connector-task-sg'
+                ],
                 assignPublicIp: 'ENABLED'
             }
           }
@@ -52,7 +54,7 @@ export const runConnectorTask = async (uplinkName: string, testnet: string, secr
 
 export const getTaskInfoByARN = async (taskARN: string): Promise<any> =>
 {
-    const describeTaskParams: DescribeTasksRequest = {
+    const describeTaskParams: ECS.DescribeTasksRequest = {
         tasks: [
             taskARN
         ],
