@@ -64,7 +64,7 @@ export const getTaskInfoByARN = async (taskARN: string): Promise<any> =>
     console.log(taskInfo);
 }
 
-// Service to stop the running connector channels, and then
+// Service to stop the running connector channels
 export const stopConnectorTask = async () =>
 {
 
