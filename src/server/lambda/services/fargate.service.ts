@@ -46,7 +46,7 @@ export const createConnectorTask = async (uplinkName: string, testnet: string, s
                 ],
                 assignPublicIp: 'ENABLED'
             }
-          }
+        }
     };
 
     try
@@ -128,11 +128,31 @@ export const stopConnectorTask = async (connectorIP: string): Promise<void> =>
 
     try
     {
-        await axios.post(`https://${connectorIP}:${connectorPort}/connector/info`, requestOptions);
+        await axios.post(`https://${connectorIP}:${connectorPort}/stop`, requestOptions);
     }
     catch (error)
     {
         console.error('Failed to stop connector ' + connectorIP);
+        console.error(error);
+        throw error;
+    }
+}
+
+export const deleteConnectorTask = async (connectorARN: string): Promise<void> =>
+{
+    const deleteTaskParams: ECS.StopTaskRequest =
+    {
+        cluster: 'ILP-Cloud-Connectors',
+        task: connectorARN
+    };
+
+    try
+    {
+        await ecs.stopTask(deleteTaskParams).promise();
+    }
+    catch (error)
+    {
+        console.error('Failed to delete connector task ' + connectorARN);
         console.error(error);
         throw error;
     }

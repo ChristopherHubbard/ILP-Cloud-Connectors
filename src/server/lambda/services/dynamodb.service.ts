@@ -34,7 +34,7 @@ export const queryConnectors = async (cognitoUserId: string): Promise<DynamoDB.Q
     }
 }
 
-export const addConnector = async (cognitoUserId: string, connectorName: string, connectorIP: string): Promise<void> => 
+export const addConnector = async (cognitoUserId: string, connectorName: string, connectorARN: string): Promise<void> => 
 {
     try
     {
@@ -46,13 +46,13 @@ export const addConnector = async (cognitoUserId: string, connectorName: string,
                     S: cognitoUserId
                 }
             },
-            UpdateExpression: 'SET connectors.#connectorName = :connectorIP',
+            UpdateExpression: 'SET connectors.#connectorName = :connectorARN',
             ExpressionAttributeNames: {
                 '#connectorName': connectorName
             },
             ExpressionAttributeValues: {
-                ':connectorIP': {
-                    S: connectorIP
+                ':connectorARN': {
+                    S: connectorARN
                 }
             }
         };
@@ -96,14 +96,18 @@ export const deleteConnector = async (cognitoUserId: string, connectorName: stri
     }
 }
 
-export const getConnector = async (cognitoUserId: string, connectorName: string): Promise<string> =>
+export const getConnector = async (cognitoUserId: string, connectorName: string): Promise<any> =>
 {
     try
     {
         const queryResponse: DynamoDB.QueryOutput = await queryConnectors(cognitoUserId);
 
         // Extract the IP for this connector from the map -- this might throw which means there is no item found or no connector wiht this name
-        return ((queryResponse.Items as Array<DynamoDB.AttributeMap>)[0].connectors.M as DynamoDB.MapAttributeValue)[connectorName].S as string;
+        const connectorAttributes = ((queryResponse.Items as Array<DynamoDB.AttributeMap>)[0].connectors.M as DynamoDB.MapAttributeValue)[connectorName].M as DynamoDB.MapAttributeValue;
+        return {
+            connectorIP: connectorAttributes.connectorIP.S as string,
+            connectorARN: connectorAttributes.connectorARN.S as string
+        }
     }
     catch (error)
     {
@@ -113,11 +117,11 @@ export const getConnector = async (cognitoUserId: string, connectorName: string)
     }
 }
 
-export const updateConnector = async (cognitoUserId: string, connectorName: string, connectorIP: string): Promise<void> =>
+export const updateConnector = async (cognitoUserId: string, connectorName: string, connectorARN: string): Promise<void> =>
 {
     try
     {
-        await addConnector(cognitoUserId, connectorName, connectorIP);
+        await addConnector(cognitoUserId, connectorName, connectorARN);
         console.log('Connector ' + connectorName + ' updated for user ' + cognitoUserId);
     }
     catch (error)

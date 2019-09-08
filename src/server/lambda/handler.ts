@@ -1,18 +1,37 @@
 import { Handler, APIGatewayProxyEvent, Context, APIGatewayProxyResult } from 'aws-lambda';
+import { ECS, EC2 } from 'aws-sdk';
 
-import { runConnectorTask, getTaskInfoByARN } from './services';
+import { createConnectorTask, addConnector } from './services';
 
 export const createConnector: Handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> =>
 {
     console.log(event);
     console.log(context);
 
-    const { uplinkName, testnet, secret } = JSON.parse(event.body as string);
+    const { uplinkName, testnet, secret, cognitoUserId, connectorName } = JSON.parse(event.body as string);
     
     try
     {
-        const task = await runConnectorTask(uplinkName, testnet, secret);
+        // Create the connector task
+        const task = await createConnectorTask(uplinkName, testnet, secret);
 
+        // Save the connector task information
+        const taskARN: string = (task.tasks as Array<ECS.Task>)[0].taskArn as string;
+        setTimeout(async () => {
+            const d = await (new ECS()).describeTasks({
+                cluster: 'ILP-Cloud-Connectors',
+                tasks: [
+                    taskARN
+                ]
+            }).promise();
+            const r = await (new EC2()).describeNetworkInterfaces({
+                NetworkInterfaceIds: [
+                    ((d.tasks as any)[0].attachments[0] as any).details[1].value as string
+                ]
+            }).promise();
+            console.log(r);
+        }, 15000);
+        // const c = await addConnector(cognitoUserId, connectorName, (task.tasks as Array<ECS.Task>)[0].t)
         return {
             statusCode: 200,
             body: JSON.stringify({
@@ -62,12 +81,9 @@ export const getConnectorInfo: Handler = async (event: APIGatewayProxyEvent, con
     console.log(event);
     console.log(context);
 
-    const { IPAddress } = await getTaskInfoByARN('b0f148f1-0b75-4762-9975-78c049460dfd');
-
     return {
         statusCode: 200,
         body: JSON.stringify({
-            IPAddress
         })
     };
 }
