@@ -20,7 +20,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs10.x
   stage: dev
   region: us-east-2
   iamRoleStatements:
@@ -34,7 +34,7 @@ provider:
        - dynamodb:DeleteItem
        - ecs:RunTask
       Resource: 
-        - "arn:aws:dynamodb:us-east-2:659125015803:table/Connectors"
+        - "arn:aws:dynamodb:us-east-2:659125015803:table/ilp-connectors"
 
 package:
   exclude:

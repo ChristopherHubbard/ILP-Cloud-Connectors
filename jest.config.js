@@ -15,8 +15,6 @@ module.exports = {
     ],
     "verbose": true,
     "coveragePathIgnorePatterns": [
-      "<rootDir>/src/client/index.tsx",
-      "<rootDir>/src/client/components/LoginPage.tsx",
-      "<rootDir>/src/client/components/RegisterPage.tsx"
+      "<rootDir>/src/client/index.tsx"
     ]
   }
