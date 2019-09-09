@@ -1,11 +1,11 @@
 import { ECS, AWSError } from 'aws-sdk';
 import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
 
-const connectorPort: number = 8081;
+const { connectorRegion, connectorPort, connectorClusterName, connectorTaskDefinition, connectorVPCSubnets, connectorSecurityGroups } = require('../config/fargate.config.json');
 
 // Create an ECS context to create tasks
 const ecs: ECS = new ECS({
-    region: 'us-east-2'
+    region: connectorRegion
 });
 
 export const createConnectorTask = async (uplinkName: string, testnet: string, secret: string): Promise<ECS.RunTaskResponse> =>
@@ -14,9 +14,9 @@ export const createConnectorTask = async (uplinkName: string, testnet: string, s
     // simply extends it
     const runTaskParams: ECS.RunTaskRequest =
     {
-        taskDefinition: 'ilp-cloud-connector-task',
+        taskDefinition: connectorTaskDefinition,
         launchType: 'FARGATE',
-        cluster: 'ILP-Cloud-Connectors',
+        cluster: connectorClusterName,
         overrides: {
             containerOverrides: [
                 {
@@ -36,14 +36,8 @@ export const createConnectorTask = async (uplinkName: string, testnet: string, s
         },
         networkConfiguration: {
             awsvpcConfiguration: {
-                subnets: [
-                    'subnet-74069d0e',
-                    'subnet-d4d5f8bc',
-                    'subnet-50e82a1c'
-                ],
-                securityGroups: [
-                    'sg-035cb457f0aa894e3'
-                ],
+                subnets: connectorVPCSubnets,
+                securityGroups: connectorSecurityGroups,
                 assignPublicIp: 'ENABLED'
             }
         }

@@ -1,10 +1,10 @@
 import { DynamoDB } from 'aws-sdk';
 
-const dynamodb: DynamoDB = new DynamoDB({
-    region: 'us-east-2'
-});
+const { connectorTableRegion, connectorTableName } = require('../config/dynamodb.config.json');
 
-const CONNECTOR_TABLE: string = 'ilp-connectors';
+const dynamodb: DynamoDB = new DynamoDB({
+    region: connectorTableRegion
+});
 
 export const queryConnectors = async (cognitoUserId: string): Promise<DynamoDB.QueryOutput> =>
 {
@@ -13,7 +13,7 @@ export const queryConnectors = async (cognitoUserId: string): Promise<DynamoDB.Q
         // Query for the user in the table
         console.log('Querying for cognito user in connector table');
         const queryParams: DynamoDB.QueryInput = {
-            TableName: CONNECTOR_TABLE,
+            TableName: connectorTableName,
             KeyConditionExpression: 'userID = :userid',
             ExpressionAttributeValues: {
                 ':userid': {
@@ -40,7 +40,7 @@ export const addConnector = async (cognitoUserId: string, connectorName: string,
     {
         // Create the update params for this item -- shouldn't need to query because this will add item if it doesn't exist
         const updateParams: DynamoDB.UpdateItemInput = {
-            TableName: CONNECTOR_TABLE,
+            TableName: connectorTableName,
             Key: {
                 userID: {
                     S: cognitoUserId
@@ -73,7 +73,7 @@ export const deleteConnector = async (cognitoUserId: string, connectorName: stri
     {
         // Delete the connector from the collection if it exists
         const updateItemParams: DynamoDB.UpdateItemInput = {
-            TableName: CONNECTOR_TABLE,
+            TableName: connectorTableName,
             Key: {
                 userID: {
                     S: cognitoUserId
@@ -105,7 +105,6 @@ export const getConnector = async (cognitoUserId: string, connectorName: string)
         // Extract the IP for this connector from the map -- this might throw which means there is no item found or no connector wiht this name
         const connectorAttributes = ((queryResponse.Items as Array<DynamoDB.AttributeMap>)[0].connectors.M as DynamoDB.MapAttributeValue)[connectorName].M as DynamoDB.MapAttributeValue;
         return {
-            connectorIP: connectorAttributes.connectorIP.S as string,
             connectorARN: connectorAttributes.connectorARN.S as string
         }
     }

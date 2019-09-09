@@ -1,0 +1,14 @@
+{
+    "connectorRegion": "us-east-2",
+    "connectorPort": 8081,
+    "connectorClusterName": "ILP-Cloud-Connectors",
+    "connectorTaskDefinition": "ilp-cloud-connector-task",
+    "connectorVPCSubnets": [
+        "subnet-74069d0e",
+        "subnet-d4d5f8bc",
+        "subnet-50e82a1"
+    ],
+    "connectorSecurityGroups": [
+        "sg-035cb457f0aa894e3"
+    ]
+}
