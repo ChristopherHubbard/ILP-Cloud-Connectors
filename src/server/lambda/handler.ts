@@ -55,6 +55,10 @@ export const startConnector: Handler = async (event: APIGatewayProxyEvent, conte
     console.log(event);
     console.log(context);
 
+    // The connector can only be started if the state is RUNNING so the IP can be retrieved
+    const { cognitoUserId, connectorName } = JSON.parse(event.body as string);
+
+    const taskDescription = 
     return {
         statusCode: 200,
         body: JSON.stringify({
